@@ -1,0 +1,15 @@
+.wordle-input {
+    display: inline-block;
+    background-color: #f4f4f4;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    padding: 10px;
+    font-size: 24px;
+}
+
+.wordle-input input[type="text"] {
+    border: none;
+    outline: none;
+    width: 30px;
+    text-align: center;
+}

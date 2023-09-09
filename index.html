@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <title>Music Recommendation Website</title>
+        <meta charset="utf-8">
+
+        <link rel="stylesheet" href="test.css">
+        <!-- <link rel="stylesheet" href="style.css"> -->
+    </head>
+
+    <body>
+        <div class="wordle-input">
+            <input type="text" maxlength="1" id="guess11" placeholder="_">
+            <input type="text" maxlength="1" id="guess12" placeholder="_">
+            <input type="text" maxlength="1" id="guess13" placeholder="_">
+            <input type="text" maxlength="1" id="guess14" placeholder="_">
+            <input type="text" maxlength="1" id="guess15" placeholder="_">
+        </div>
+        <br>
+        
+        <div class="wordle-input">
+            <input type="text" maxlength="1" id="guess21" placeholder="_">
+            <input type="text" maxlength="1" id="guess22" placeholder="_">
+            <input type="text" maxlength="1" id="guess23" placeholder="_">
+            <input type="text" maxlength="1" id="guess24" placeholder="_">
+            <input type="text" maxlength="1" id="guess25" placeholder="_">
+        </div>
+        <br>
+        
+        <div class="wordle-input">
+            <input type="text" maxlength="1" id="guess31" placeholder="_">
+            <input type="text" maxlength="1" id="guess32" placeholder="_">
+            <input type="text" maxlength="1" id="guess33" placeholder="_">
+            <input type="text" maxlength="1" id="guess34" placeholder="_">
+            <input type="text" maxlength="1" id="guess35" placeholder="_">
+        </div>
+        <br>
+        
+        <div class="wordle-input">
+            <input type="text" maxlength="1" id="guess41" placeholder="_">
+            <input type="text" maxlength="1" id="guess42" placeholder="_">
+            <input type="text" maxlength="1" id="guess43" placeholder="_">
+            <input type="text" maxlength="1" id="guess44" placeholder="_">
+            <input type="text" maxlength="1" id="guess45" placeholder="_">
+        </div>
+        <br>
+        
+        <div class="wordle-input">
+            <input type="text" maxlength="1" id="guess51" placeholder="_">
+            <input type="text" maxlength="1" id="guess52" placeholder="_">
+            <input type="text" maxlength="1" id="guess53" placeholder="_">
+            <input type="text" maxlength="1" id="guess54" placeholder="_">
+            <input type="text" maxlength="1" id="guess55" placeholder="_">
+        </div>
+        <br>
+
+        <div class="wordle-input">
+            <input type="text" maxlength="1" id="guess61" placeholder="_">
+            <input type="text" maxlength="1" id="guess62" placeholder="_">
+            <input type="text" maxlength="1" id="guess63" placeholder="_">
+            <input type="text" maxlength="1" id="guess64" placeholder="_">
+            <input type="text" maxlength="1" id="guess65" placeholder="_">
+        </div>
+        <br>
+        
+        <button type="submit" id="submitWordBtn">Submit Word.</button>
+        <button type="submit" id="getHintBtn">Get Hint.</button>
+        
+        <br>
+
+        <label id="getHintLbl">Empty Hint.</label>
+
+        <script type="module">
+            document.querySelector("#submitWordBtn").addEventListener('click', () => {
+                enterWord();
+            });
+
+            document.querySelector("#getHintBtn").addEventListener('click', () => {
+                getHint();
+            });
+
+
+            
+            var count = 0;
+            var words = [];
+            const wordArr = await getWords();
+
+            var answer = wordArr[Math.floor(Math.random() * wordArr.length)];
+            console.log(answer);
+
+            async function enterWord() {
+                words.push(await convToWord());
+
+                console.log(words);
+
+                changeColors(await getColors(words[count], answer));
+                count++;
+            }
+
+            async function getColors(word, answer) {
+                var mask = "";
+
+                for(var i = 0; i < word.length; i++) 
+                    if(word[i] == answer[i])
+                        mask += "2";
+                    else {
+                        var check = false;
+                        for(var j = 0; j < answer.length; j++) 
+                            if(word[i] == answer[j]) {
+                                check = true;
+                                break;
+                            }
+                        
+                        if(check) 
+                           mask += "1";
+                        
+                        else 
+                            mask += "0"; 
+                    }
+                
+
+                return mask;
+            }
+
+            async function getHint() {
+                var form = new FormData();
+                form.append("words", JSON.stringify(words));
+                form.append("answer", JSON.stringify(answer));
+                form.append("wordArr", JSON.stringify(wordArr));
+                form.append("methodName", "getWords");
+
+                const response = await fetch("test.php", {
+                    method: "POST",
+                    body: form
+                });
+
+                var data = await response.json();
+
+                document.getElementById("getHintLbl").innerHTML = "The Hint Is: " + data;
+            }
+
+            async function getWords() {
+                var response = await fetch("./wordleWords.json");
+
+                var words = await response.json();
+
+                console.log(words);
+                return words;
+            }
+
+            async function convToWord() {
+                switch(count) {
+                    case 0:
+                        return document.getElementById("guess11").value + document.getElementById("guess12").value + document.getElementById("guess13").value + document.getElementById("guess14").value + document.getElementById("guess15").value;
+                        break;
+                    case 1:
+                        return document.getElementById("guess21").value + document.getElementById("guess22").value + document.getElementById("guess23").value + document.getElementById("guess24").value + document.getElementById("guess25").value;
+                        break;
+                    case 2:
+                        return document.getElementById("guess31").value + document.getElementById("guess32").value + document.getElementById("guess33").value + document.getElementById("guess34").value + document.getElementById("guess35").value;
+                        break;
+                    case 3:
+                        return document.getElementById("guess41").value + document.getElementById("guess42").value + document.getElementById("guess43").value + document.getElementById("guess44").value + document.getElementById("guess45").value;
+                        break;
+                    case 4:
+                        return document.getElementById("guess51").value + document.getElementById("guess52").value + document.getElementById("guess53").value + document.getElementById("guess54").value + document.getElementById("guess55").value;
+                        break;
+                    case 5:
+                        return document.getElementById("guess61").value + document.getElementById("guess62").value + document.getElementById("guess63").value + document.getElementById("guess64").value + document.getElementById("guess65").value;
+                        break;
+                    
+
+                }
+            }
+
+            async function changeColors(mask) {
+                for(var i = 1; i < 6; i++) {
+                    var character = document.getElementById("guess" + (1+count) + "" + i).value;
+
+                    var color = "gray";
+                    if(mask[i-1] == "1") {
+                        color = "yellow";
+                    }
+                    else if(mask[i-1] == "2") {
+                        color = "green";
+                    }
+
+                    document.getElementById("guess" + (1+count) + "" + i).style.backgroundColor = color 
+                }
+            }
+        </script>
+    </body>
+</html>
